@@ -2,8 +2,8 @@
 
 un programme qui génère des textes depuis une base de donner
 
-#### To do liste:
-- [ ] couper la base de données en textes
+### To do liste:
+- [x] couper la base de données en textes
 - [x] couper les textes en mots
 - [ ] charger les mots dans le format de donnée prévue
 - [ ] généré du texte
