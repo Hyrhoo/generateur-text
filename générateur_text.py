@@ -15,6 +15,9 @@ class Children:
         self.total = 0
         self.data = {}
     
+    def __repr__(self) -> str:
+        return f"{self.data}"
+    
     def add_children(self, child):
         if child in self.data:
             self.data[child] += 1
@@ -38,6 +41,15 @@ class Word:
             self.after.append(Children())
             self.before.append(Children())
     
+    def __eq__(self, other: object) -> bool:
+        return self.word == other.word
+
+    def __repr__(self) -> str:
+        return f"{self.word}"
+    
+    def __hash__(self) -> int:
+        return hash(self.word)
+
     def insert_word_after(self, word, pos):
         self.after[pos].add_children(word)
 
@@ -48,7 +60,7 @@ class Word:
     # ===== fonctions ===== #
 
 
-def cut_data_to_texts(data: str) -> list[str]:
+def cut_data_to_texts(data: str) -> str:
     """charge un fichier .txt et le coup en textes
 
     Args:
@@ -57,7 +69,7 @@ def cut_data_to_texts(data: str) -> list[str]:
     yield:
         str: un texte contenue dans le fichier
     """
-    with open(data+'txt', "r", encoding="utf-8") as f:
+    with open(data+'.txt', "r", encoding="utf-8") as f:
         texts = f.read().split("/")
         
     for text in texts:
@@ -100,12 +112,32 @@ def cut_text_to_words(text: str) -> str:
     yield ""
 
 
-def load_data(graph, pertinance, *data_base):
+def load_data(graph: list[Word], nb_parent: int, *data_base: str):
     for data in data_base:
-        texts = cut_data_to_texts(data)
-        for text in texts:
+        
+        for text in cut_data_to_texts(data):
+            last_words: list[Word] = []
+            
             for word in cut_text_to_words(text):
-                pass
+                word = Word(word, nb_parent)
+                
+                if word in graph:
+                    word = graph[graph.index(word)]
+                
+                else:
+                    graph.append(word)
+                
+                for index in range(len(last_words)):
+                    last_word = last_words[index]
+                    last_word.insert_word_after(word, (len(last_words) - index - 1))
+                    word.insert_word_before(last_word, (len(last_words) - index - 1))
+                
+                add_last_word(last_words, word, nb_parent)
+
+def add_last_word(last_words: list[Word], word: Word, nb_parent: int):
+    last_words.append(word)
+    while len(last_words) > nb_parent:
+        del last_words[0]
 
 
 
@@ -117,6 +149,5 @@ if __name__ == "__main__":
 #     continue"""
 #     print(timeit.timeit(a, "from __main__ import cut_text_to_words"))
     graph = []
-    var = cut_text_to_words("L'histoire de l'humanité est une chronique fascinante de la vie sur terre. Depuis l'aube de la civilisation, l'humanité a fait des progrès extraordinaires dans tous les domaines, de la science et de la technologie à l'art et à la culture. Des cultures et des civilisations entières ont émergé et disparu, laissant derrière elles des héritages durables qui ont façonné le monde tel que nous le connaissons aujourd'hui.\nPourtant, l'histoire de l'humanité est également marquée par des conflits et des guerres. Les gens se sont battus pour le pouvoir, la richesse, la liberté et la survie tout au long de l'histoire. Des empires ont été érigés et détruits, des nations ont été créées et démantelées, des populations ont été déplacées et persécutées.")
-    for i in var:
-        print(f"'{i}'")
+    load_data(graph, 1, "learn")
+    print(graph[graph.index(Word(""))].before)
