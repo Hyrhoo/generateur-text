@@ -78,16 +78,14 @@ def cut_data_to_texts(data: str) -> list[str]:
     Args:
         data (str): nom du fichier à charger
 
-    Returns:
-        list[str]: chaque textes contenue dans le fichier
+    yield:
+        str: un texte contenue dans le fichier
     """
     with open(data+'txt', "r", encoding="utf-8") as f:
         texts = f.read().split("/")
         
     for text in texts:
-        text = text.strip("\n")
-    
-    return texts
+        yield text.strip("\n")
 
 
 def cut_text_to_words(text: str) -> str:
