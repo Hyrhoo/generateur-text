@@ -142,12 +142,6 @@ def add_last_word(last_words: list[Word], word: Word, nb_parent: int):
 
 
 if __name__ == "__main__":
-#     import timeit
-#     a="""
-# var = cut_text_to_words("L'histoire de l'humanité est une chronique fascinante de la vie sur terre. Depuis l'aube de la civilisation, l'humanité a fait des progrès extraordinaires dans tous les domaines, de la science et de la technologie à l'art et à la culture. Des cultures et des civilisations entières ont émergé et disparu, laissant derrière elles des héritages durables qui ont façonné le monde tel que nous le connaissons aujourd'hui.")
-# for i in var:
-#     continue"""
-#     print(timeit.timeit(a, "from __main__ import cut_text_to_words"))
     graph = []
     load_data(graph, 1, "learn")
     print(graph[graph.index(Word(""))].before)
