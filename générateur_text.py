@@ -52,6 +52,7 @@ class Word:
         self.word = word
         self.after = []
         self.before = []
+        self.nb_parent = nb_parent
         for _ in range(nb_parent):
             print(_)
             self.after.append(Children())
