@@ -113,6 +113,12 @@ def cut_text_to_words(text: str) -> str:
 
 
 def load_data(graph: list[Word], nb_parent: int, *data_base: str):
+    """charge toutes les données dans le format de donnée prévue
+
+    Args:
+        graph (list[Word]): le graph dans lequel sauvgarder les données
+        nb_parent (int): le nombre de mot avant et après chaque mot enregistrer
+    """
     for data in data_base:
         
         for text in cut_data_to_texts(data):
@@ -134,14 +140,39 @@ def load_data(graph: list[Word], nb_parent: int, *data_base: str):
                 
                 add_last_word(last_words, word, nb_parent)
 
+
 def add_last_word(last_words: list[Word], word: Word, nb_parent: int):
+    """ajoute un mot dans la liste des derniers mots
+
+    Args:
+        last_words (list[Word]): la liste dans lequel ajouter le mot
+        word (Word): le mot à ajouter
+        nb_parent (int): la taile max de la liste
+    """
     last_words.append(word)
     while len(last_words) > nb_parent:
         del last_words[0]
 
 
+def generat_text(pertinence, graph, start=""):
+    pass
+
+
+def main():
+    """boucle principal du programme"""
+    pertinence = 10
+    graph = []
+    load_data(graph, pertinence, "learn")
+    run = True
+    while run:
+        start = input("premier mot ('$*' pour quitter): ")
+        if start == "$*":
+            run = False
+        generat_text()
+
 
 if __name__ == "__main__":
-    graph = []
-    load_data(graph, 1, "learn")
-    print(graph[graph.index(Word(""))].before)
+    main()
+    #graph = []
+    #load_data(graph, 1, "learn")
+    #print(graph[graph.index(Word(""))].before)
