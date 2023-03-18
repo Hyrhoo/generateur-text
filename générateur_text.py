@@ -4,30 +4,6 @@ dots = ".?!"
 ponctuation = "?,.;:!\"'()"
 spaces = {"before": "?!:(«\"", "after": ",?.;:!)»\""}
 
-# class Word:
-#     def __init__(self, word):
-#         self.word = word
-#         self.next = {}
-#         self.preview = {}
-  
-#     def get_nbr_next(self):
-#         tot = 0
-#         for next in self.next.values():
-#             tot += next["nbr"]
-#         return tot
-  
-#     def add_next(self, next):
-#         if next not in self.next:
-#             imp = 1 / self.get_nbr_next()
-#             self.next[next] = {"nbr": 1, "imp": imp}
-
-
-# data = {}   # {"word": {"infos": [nbr, coeff], "next": {"word": [nbr, coeff], "word": [nbr, coeff], ...}, "preview": {"word": [nbr, coeff], "word": [nbr, coeff], ...}}
-
-# def add_into_data(word: str, data: dict):
-#     if word in data.keys():
-#         data[word] = {"infos": [1, 1], "next": {}, "preview": {}}
-
 
     # ===== classes ===== #
 
