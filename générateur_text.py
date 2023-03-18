@@ -65,38 +65,42 @@ class Word:
     
 def cut_text_to_words(text: str):    
     word = ""
-    output = [""]
+    yield ""
     
     for char in text:
         if char == "\n":
             if word:
-                output += [word.lower()]
+                yield word.lower()
                 word = ""
-            output += [" "]
+            yield " "
         
         elif char in ponctuation:
             if word:
-                output += [word.lower()]
+                yield word.lower()
                 word = ""
-            output += [char]
+            yield char
         
         elif char == " ":
             if word:
-                output += [word.lower()]
+                yield word.lower()
                 word = ""
         
         else:
             word += char
     
-    output += [""]
-    return output
+    yield ""
 
 def load_data(graph, pertinance, *data_base):
     pass
 
 
 if __name__ == "__main__":
-    # import timeit
-    # a="""cut_text_to_words("L'histoire de l'humanité est une chronique fascinante de la vie sur terre. Depuis l'aube de la civilisation, l'humanité a fait des progrès extraordinaires dans tous les domaines, de la science et de la technologie à l'art et à la culture. Des cultures et des civilisations entières ont émergé et disparu, laissant derrière elles des héritages durables qui ont façonné le monde tel que nous le connaissons aujourd'hui.")"""
-    # print(timeit.timeit(a, "from __main__ import cut_text_to_words"))
-    print(cut_text_to_words("L'histoire de l'humanité est une chronique fascinante de la vie sur terre. Depuis l'aube de la civilisation, l'humanité a fait des progrès extraordinaires dans tous les domaines, de la science et de la technologie à l'art et à la culture. Des cultures et des civilisations entières ont émergé et disparu, laissant derrière elles des héritages durables qui ont façonné le monde tel que nous le connaissons aujourd'hui.\nPourtant, l'histoire de l'humanité est également marquée par des conflits et des guerres. Les gens se sont battus pour le pouvoir, la richesse, la liberté et la survie tout au long de l'histoire. Des empires ont été érigés et détruits, des nations ont été créées et démantelées, des populations ont été déplacées et persécutées."))
+#     import timeit
+#     a="""
+# var = cut_text_to_words("L'histoire de l'humanité est une chronique fascinante de la vie sur terre. Depuis l'aube de la civilisation, l'humanité a fait des progrès extraordinaires dans tous les domaines, de la science et de la technologie à l'art et à la culture. Des cultures et des civilisations entières ont émergé et disparu, laissant derrière elles des héritages durables qui ont façonné le monde tel que nous le connaissons aujourd'hui.")
+# for i in var:
+#     pass"""
+#     print(timeit.timeit(a, "from __main__ import cut_text_to_words"))
+    var = cut_text_to_words("L'histoire de l'humanité est une chronique fascinante de la vie sur terre. Depuis l'aube de la civilisation, l'humanité a fait des progrès extraordinaires dans tous les domaines, de la science et de la technologie à l'art et à la culture. Des cultures et des civilisations entières ont émergé et disparu, laissant derrière elles des héritages durables qui ont façonné le monde tel que nous le connaissons aujourd'hui.\nPourtant, l'histoire de l'humanité est également marquée par des conflits et des guerres. Les gens se sont battus pour le pouvoir, la richesse, la liberté et la survie tout au long de l'histoire. Des empires ont été érigés et détruits, des nations ont été créées et démantelées, des populations ont été déplacées et persécutées.")
+    for i in var:
+        print(f"'{i}'")
