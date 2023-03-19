@@ -12,7 +12,8 @@ spaces = {"before": "?!:(«\"", "after": "…,?.;:!)»\""}
 class Children:
     """une classe pour les liésons entre les instance de classe Word"""
 
-    def __init__(self) -> None:
+    def __init__(self, coeff) -> None:
+        self.coeff = coeff
         self.total = 0
         self.data = {}
     
@@ -21,10 +22,10 @@ class Children:
     
     def add_children(self, child):
         if child in self.data:
-            self.data[child] += 1
+            self.data[child] += self.coeff
         else:
-            self.data[child] = 1
-        self.total += 1
+            self.data[child] = self.coeff
+        self.total += self.coeff
     
     def coeff_children(self, child):
         return self.data[child] / self.total
@@ -32,7 +33,7 @@ class Children:
 
 class Word(str):
     
-    def __new__(cls, word, _=0):
+    def __new__(cls, word, _=0) -> object:
         return str.__new__(cls, word)
 
     def __init__(self, word, nb_parent=0) -> None:
@@ -41,16 +42,22 @@ class Word(str):
         self.after = []
         self.before = []
         self.nb_parent = nb_parent
-        self.total_multi = round((nb_parent*(nb_parent+1))/2)
-        for _ in range(nb_parent):
-            self.after.append(Children())
-            self.before.append(Children())
+        # self.total_multi = round((nb_parent*(nb_parent+1))/2)
+        for i in range(nb_parent, 0, -1):
+            self.after.append(Children(i))
+            self.before.append(Children(i))
 
     def insert_word_after(self, word, pos):
         self.after[pos].add_children(word)
 
     def insert_word_before(self, word, pos):
         self.before[pos].add_children(word)
+    
+    def calcule_possible_next(self, last_words):
+        possible = {}
+        for word in self.after[0].data:
+            pass
+
 
 
     # ===== fonctions ===== #
@@ -58,7 +65,7 @@ class Word(str):
 
 def get_index(tab, x):
     pos = bisect_left(tab, x)
-    return (pos if pos != len(tab) and tab[pos] == x else -1)
+    return pos if pos != len(tab) and tab[pos] == x else -1
 
 
 def cut_data_to_texts(data: str) -> str:
@@ -86,9 +93,9 @@ def cut_text_to_words(text: str) -> str:
     Yields:
         str: un mot du texte
     """
-    word = ""
     yield ""
     yield " "
+    word = ""
     
     for char in text:
         if char == "\n":
@@ -111,6 +118,7 @@ def cut_text_to_words(text: str) -> str:
         else:
             word += char
     
+    if word: yield word
     yield " "
     yield ""
 
@@ -130,7 +138,7 @@ def load_data(graph: list[Word], nb_parent: int, *data_base: str):
             for word in cut_text_to_words(text):
                 word = Word(word, nb_parent)
                 
-                if i:=get_index(graph, word) != -1:
+                if (i:=get_index(graph, word)) != -1:
                     word = graph[i]
                 
                 else:
@@ -157,16 +165,56 @@ def add_last_word(last_words: list[Word], word: Word, nb_parent: int):
         del last_words[0]
 
 
+def select_random_word(words, total_coeff):
+    nb_aleatoire = random.randint(0, total_coeff)
+    cumulative_coef = 0
+    for mot, coef in words:
+        cumulative_coef += coef
+        if nb_aleatoire <= cumulative_coef:
+            return mot
+
+
+def assemble_words(words):
+    sentence = ""
+    for word in words[2:]:
+        if word == "":
+            continue
+        if word == " ":
+            sentence += "\n"
+        elif word in ponctuation:
+            to_add = ""
+            if word in spaces["before"]: to_add += " "
+            to_add += word
+            if word in spaces["after"]: to_add += " "
+            sentence += to_add
+        else:
+            if sentence and (sentence[-1] not in ponctuation and sentence[-1] != " "):
+                sentence += " "
+            sentence += word
+    return sentence
+
+
+
 def generat_text(pertinence: int, graph: list[Word], start: str=""):
-    if i:=get_index(graph, start) != -1:
-        return start
-    word = graph[i]
-    last_words = [start]
+    words = []
+    for word in cut_text_to_words(start):
+        if (i:=get_index(graph, word)) != -1:
+            words.append(graph[i])
+        else:
+            return "- Mot inconnue -"
+    words.pop()
+    words.pop()
+
+    last_words = []
+    for word in words:
+        add_last_word(last_words, word, pertinence)
+    
+    return assemble_words(words)
 
 
 def main():
     """boucle principal du programme"""
-    quit_str = "$*"
+    quit_str = "exit"
     pertinence = 10
     graph = []
     load_data(graph, pertinence, "learn")
@@ -176,7 +224,7 @@ def main():
         if start == quit_str:
             run = False
             continue
-        print(generat_text(pertinence, graph, start))
+        print("\n"+generat_text(pertinence, graph, start)+"\n")
 
 
 if __name__ == "__main__":
@@ -184,6 +232,6 @@ if __name__ == "__main__":
     # graph = []
     # load_data(graph, 1, "learn")
     # print(graph)
-    # for i in graph[graph.index(" ")].after:
+    # for i in graph[graph.index(" ")].before:
     #    print(i)
     #    print(i.total)
