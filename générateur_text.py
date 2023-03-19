@@ -1,4 +1,5 @@
 import random
+from bisect import bisect_left, insort_left
 
 dots = ".?!"
 ponctuation = "?,.;:!\"'()-«»…"
@@ -53,6 +54,11 @@ class Word(str):
 
 
     # ===== fonctions ===== #
+
+
+def get_index(tab, x):
+    pos = bisect_left(tab, x)
+    return (pos if pos != len(tab) and tab[pos] == x else -1)
 
 
 def cut_data_to_texts(data: str) -> str:
@@ -124,11 +130,11 @@ def load_data(graph: list[Word], nb_parent: int, *data_base: str):
             for word in cut_text_to_words(text):
                 word = Word(word, nb_parent)
                 
-                if word in graph:
-                    word = graph[graph.index(word)]
+                if i:=get_index(graph, word) != -1:
+                    word = graph[i]
                 
                 else:
-                    graph.append(word)
+                    insort_left(graph, word)
                 
                 for index in range(len(last_words)):
                     last_word = last_words[index]
@@ -152,9 +158,9 @@ def add_last_word(last_words: list[Word], word: Word, nb_parent: int):
 
 
 def generat_text(pertinence: int, graph: list[Word], start: str=""):
-    if start not in graph:
+    if i:=get_index(graph, start) != -1:
         return start
-    word = graph[graph.index(start)]
+    word = graph[i]
     last_words = [start]
 
 
@@ -177,6 +183,7 @@ if __name__ == "__main__":
     main()
     # graph = []
     # load_data(graph, 1, "learn")
+    # print(graph)
     # for i in graph[graph.index(" ")].after:
-    #     print(i)
-    #     print(i.total)
+    #    print(i)
+    #    print(i.total)
