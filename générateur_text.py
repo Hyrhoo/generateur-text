@@ -1,8 +1,8 @@
 import random
 
 dots = ".?!"
-ponctuation = "?,.;:!\"'()"
-spaces = {"before": "?!:(«\"", "after": ",?.;:!)»\""}
+ponctuation = "?,.;:!\"'()-«»…"
+spaces = {"before": "?!:(«\"", "after": "…,?.;:!)»\""}
 
 
     # ===== classes ===== #
@@ -29,9 +29,13 @@ class Children:
         return self.data[child] / self.total
 
 
-class Word:
+class Word(str):
     
-    def __init__(self, word: str, nb_parent: int=5) -> None:
+    def __new__(cls, word, _=0):
+        return str.__new__(cls, word)
+
+    def __init__(self, word, nb_parent=0) -> None:
+        super().__init__()
         self.word = word
         self.after = []
         self.before = []
@@ -40,15 +44,6 @@ class Word:
         for _ in range(nb_parent):
             self.after.append(Children())
             self.before.append(Children())
-    
-    def __eq__(self, other: object) -> bool:
-        return self.word == other.word
-
-    def __repr__(self) -> str:
-        return f"{self.word}"
-    
-    def __hash__(self) -> int:
-        return hash(self.word)
 
     def insert_word_after(self, word, pos):
         self.after[pos].add_children(word)
@@ -87,6 +82,7 @@ def cut_text_to_words(text: str) -> str:
     """
     word = ""
     yield ""
+    yield " "
     
     for char in text:
         if char == "\n":
@@ -109,6 +105,7 @@ def cut_text_to_words(text: str) -> str:
         else:
             word += char
     
+    yield " "
     yield ""
 
 
@@ -154,25 +151,32 @@ def add_last_word(last_words: list[Word], word: Word, nb_parent: int):
         del last_words[0]
 
 
-def generat_text(pertinence, graph, start=""):
-    pass
+def generat_text(pertinence: int, graph: list[Word], start: str=""):
+    if start not in graph:
+        return start
+    word = graph[graph.index(start)]
+    last_words = [start]
 
 
 def main():
     """boucle principal du programme"""
+    quit_str = "$*"
     pertinence = 10
     graph = []
     load_data(graph, pertinence, "learn")
     run = True
     while run:
-        start = input("premier mot ('$*' pour quitter): ")
-        if start == "$*":
+        start = input(f"premier mot ('{quit_str}' pour quitter): ")
+        if start == quit_str:
             run = False
-        generat_text()
+            continue
+        print(generat_text(pertinence, graph, start))
 
 
 if __name__ == "__main__":
     main()
-    #graph = []
-    #load_data(graph, 1, "learn")
-    #print(graph[graph.index(Word(""))].before)
+    # graph = []
+    # load_data(graph, 1, "learn")
+    # for i in graph[graph.index(" ")].after:
+    #     print(i)
+    #     print(i.total)
