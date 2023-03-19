@@ -55,8 +55,9 @@ class Word(str):
     
     def calcule_possible_next(self, last_words):
         possible = {}
-        for word in self.after[0].data:
-            pass
+        return ({"": 1}, 1)
+        #for word in self.after[0].data:
+        #    pass
 
 
 
@@ -168,7 +169,7 @@ def add_last_word(last_words: list[Word], word: Word, nb_parent: int):
 def select_random_word(words, total_coeff):
     nb_aleatoire = random.randint(0, total_coeff)
     cumulative_coef = 0
-    for mot, coef in words:
+    for mot, coef in words.items():
         cumulative_coef += coef
         if nb_aleatoire <= cumulative_coef:
             return mot
@@ -176,21 +177,31 @@ def select_random_word(words, total_coeff):
 
 def assemble_words(words):
     sentence = ""
-    for word in words[2:]:
+    add_space = False
+    maj = True
+    for word in words:
         if word == "":
             continue
         if word == " ":
             sentence += "\n"
+            maj = True
+        
         elif word in ponctuation:
-            to_add = ""
-            if word in spaces["before"]: to_add += " "
-            to_add += word
-            if word in spaces["after"]: to_add += " "
-            sentence += to_add
-        else:
-            if sentence and (sentence[-1] not in ponctuation and sentence[-1] != " "):
-                sentence += " "
+            if word in spaces["before"]: sentence += " "
             sentence += word
+            if word in spaces["after"]: sentence += " "
+            if word in dots: maj = True
+            add_space = False
+        else:
+            if add_space:
+                sentence += " "
+            
+            if maj:
+                maj = False
+                word = word.capitalize()
+            
+            sentence += word
+            add_space = True
     return sentence
 
 
@@ -209,7 +220,14 @@ def generat_text(pertinence: int, graph: list[Word], start: str=""):
     for word in words:
         add_last_word(last_words, word, pertinence)
     
-    return assemble_words(words)
+    word = words[-1]
+    while last_words[-1]:
+        possible, total = word.calcule_possible_next(last_words)
+        word = select_random_word(possible, total)
+        add_last_word(last_words, word, pertinence)
+        words.append(word)
+
+    return assemble_words(words[2:])
 
 
 def main():
