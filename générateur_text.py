@@ -64,7 +64,7 @@ class Word(str):
     # ===== fonctions ===== #
 
 
-def get_index(tab, x):
+def get_index(tab: list, x):
     pos = bisect_left(tab, x)
     return pos if pos != len(tab) and tab[pos] == x else -1
 
@@ -166,7 +166,7 @@ def add_last_word(last_words: list[Word], word: Word, nb_parent: int):
         del last_words[0]
 
 
-def select_random_word(words, total_coeff):
+def select_random_word(words: dict[Word: int], total_coeff: int):
     nb_aleatoire = random.randint(0, total_coeff)
     cumulative_coef = 0
     for mot, coef in words.items():
@@ -175,7 +175,7 @@ def select_random_word(words, total_coeff):
             return mot
 
 
-def assemble_words(words):
+def assemble_words(words: list[Word]):
     sentence = ""
     add_space = False
     maj = True
@@ -207,7 +207,7 @@ def assemble_words(words):
 
 
 def generat_text(pertinence: int, graph: list[Word], start: str=""):
-    words = []
+    words: list[Word] = []
     for word in cut_text_to_words(start):
         if (i:=get_index(graph, word)) != -1:
             words.append(graph[i])
