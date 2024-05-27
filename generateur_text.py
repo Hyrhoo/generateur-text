@@ -1,9 +1,9 @@
 import random
 from bisect import bisect_left, insort_left
 
-dots = ".?!"
-ponctuation = "?,.;:!\"'()-«»…"
-spaces = {"before": "?!:(«\"", "after": "…,?.;:!)»\""}
+dots = {'.', '?', '!'}
+ponctuation = {'?', ',', '.', ';', ':', '!', '"', "'", '(', ')', '-', '«', '»', '…'}
+spaces = {"before": {'?', '!', ':', '(', '«', '"'}, "after": {'…', ',', '?', '.', ';', ':', '!', ')', '»', '"'}}
 
 
     # ===== classes ===== #
@@ -246,10 +246,10 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
-    # graph = []
-    # load_data(graph, 1, "learn")
-    # print(graph)
-    # for i in graph[graph.index(" ")].before:
-    #    print(i)
-    #    print(i.total)
+    # main()
+    graph = []
+    load_data(graph, 1, "learn")
+    print(graph)
+    for i in graph[graph.index(" ")].before:
+       print(i)
+       print(i.total)
